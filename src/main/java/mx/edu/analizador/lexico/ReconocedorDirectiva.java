@@ -45,7 +45,7 @@ public class ReconocedorDirectiva implements ReconocedorToken {
 
         while (!cursor.fin() && !esFinDeLinea(cursor)) {
             if (esContinuacionDeLinea(cursor)) {
-                // Consumimos la \ y el salto de línea, y seguimos en la línea siguiente.
+
                 while (cursor.actual() != '\n') {
                     lexema.append(cursor.actual());
                     cursor.avanzar();
@@ -79,7 +79,7 @@ public class ReconocedorDirectiva implements ReconocedorToken {
             i++;
         }
 
-        // El nombre debe terminar ahí: "#includes" o "#define2" no son directivas.
+
         char despues = cursor.siguiente(i);
         if (Character.isLetterOrDigit(despues) || despues == '_') return false;
 
