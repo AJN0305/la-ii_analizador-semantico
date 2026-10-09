@@ -24,4 +24,15 @@ class LexerTest {
     void caracterDesconocidoLanzaExcepcion() {
         assertThrows(IllegalStateException.class, () -> lexer().analizar("(@)"));
     }
+
+    @Test
+    void lexerPorDefectoReconoceUnaDeclaracion() {
+        assertEquals(List.of(
+            new Token("char", TipoToken.PALABRA_RESERVADA, 1, 1, 4),
+            new Token("c", TipoToken.IDENTIFICADOR, 1, 6, 6),
+            new Token("[", TipoToken.SIMBOLO, 1, 7, 7),
+            new Token("]", TipoToken.SIMBOLO, 1, 8, 8),
+            new Token(";", TipoToken.SIMBOLO, 1, 9, 9)
+        ), new Lexer().analizar("char c[];"));
+    }
 }
