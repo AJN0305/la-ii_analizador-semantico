@@ -14,7 +14,7 @@ public class PruebaLectura {
 
         String ruta = tomasa.nextLine();
         if (ruta.toLowerCase().endsWith(".c")) {
-            String c = LectorC.Lectura(ruta);
+            String c = LectorC.leer(ruta);
             System.out.println("EL codigo es");
             System.out.println(c);
             // Aqui se crea el lexer donde se le otorga el reconocedor de simbolos

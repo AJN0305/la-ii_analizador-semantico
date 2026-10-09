@@ -118,7 +118,7 @@ public class tc_interfaz_grafica extends JFrame {
         try {
 
             // Leer el archivo C
-            String codigo = LectorC.Lectura(opcion);
+            String codigo = LectorC.leer(opcion);
             // Mostrar el código
             areaCodigo.setText(codigo);
             areaCodigo.setCaretPosition(0);
