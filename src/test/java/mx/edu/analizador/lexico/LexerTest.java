@@ -1,10 +1,9 @@
 package mx.edu.analizador.lexico;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class LexerTest {
 
@@ -13,6 +12,7 @@ class LexerTest {
                 new ReconocedorComentario(),
                 new ReconocedorCaracter(),
                 new ReconocedorIdentificador(),
+                new ReconocedorNumero(),
                 new ReconocedorSimbolo()
         ));
     }
@@ -70,5 +70,20 @@ class LexerTest {
 
         assertEquals(2, x.linea());
         assertEquals(7, x.inicio());
+    }
+
+    @Test
+    void reconoceNumeros() {
+        List<Token> tokens = lexer().analizar("42 3.14");
+        assertEquals(2, tokens.size());
+
+        assertEquals(new Token("42", TipoToken.CONSTANTE_ENTERA, 1, 1, 2), tokens.getFirst());
+        assertEquals(new Token("3.14", TipoToken.CONSTANTE_REAL, 1, 4, 7), tokens.get(1));
+    }
+
+    @Test
+    void detieneLecturaEnPuntoInvalido() {
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> lexer().analizar("1.5.3"));
+        assertTrue(exception.getMessage().contains("Carácter inesperado '.'"));
     }
 }
