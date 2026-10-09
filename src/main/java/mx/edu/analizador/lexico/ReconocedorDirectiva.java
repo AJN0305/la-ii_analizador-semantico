@@ -25,7 +25,7 @@ public class ReconocedorDirectiva implements ReconocedorToken {
 
         while (!cursor.fin() && !esFinDeLinea(cursor)) {
             if (esContinuacionDeLinea(cursor)) {
-                // Consumimos la \ y el salto de línea, y seguimos en la línea siguiente.
+
                 while (cursor.actual() != '\n') {
                     lexema.append(cursor.actual());
                     cursor.avanzar();
@@ -43,7 +43,7 @@ public class ReconocedorDirectiva implements ReconocedorToken {
     private boolean esInicioDeLinea(Cursor cursor) {
         for (int n = -1; ; n--) {
             char c = cursor.siguiente(n);
-            if (c == '\n' || c == '\0') return true;   // '\0' = inicio del archivo
+            if (c == '\n' || c == '\0') return true;
             if (c != ' ' && c != '\t') return false;
         }
     }

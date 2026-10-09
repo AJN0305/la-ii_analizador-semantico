@@ -3,7 +3,7 @@ package mx.edu.analizador.lexico;
 
 public class ReconocedorSimbolo implements ReconocedorToken {
 
-    // Ordenados de MAYOR a MENOR longitud: así siempre se prueba primero el más largo.
+
     private static final String[] SIMBOLOS = {
             // 3 caracteres
             "...",

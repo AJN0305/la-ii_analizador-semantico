@@ -8,12 +8,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ReconocedorSimboloTest {
-    // Mismo orden que en el Lexer real: símbolos antes que operadores.
+
     private Lexer lexer() {
         return new Lexer(List.of(new ReconocedorSimbolo(), new ReconocedorOperador()));
     }
 
-    // ---------- Caso normal ----------
+
 
     @Test
     void reconoceSimbolosDeAgrupacionYSeparadores() {
@@ -33,11 +33,10 @@ class ReconocedorSimboloTest {
         assertEquals(new Token("}", TipoToken.SIMBOLO, 2, 3, 3), tokens.get(1));
     }
 
-    // ---------- Casos borde: la pieza más larga ----------
 
     @Test
     void puntosSuspensivosSonUnSoloSimbolo() {
-        // Como en: int printf(const char *formato, ...)
+
         List<Token> tokens = lexer().analizar("(, ...)");
         assertEquals(4, tokens.size());
         assertEquals(new Token("(", TipoToken.SIMBOLO, 1, 1, 1), tokens.get(0));
@@ -48,7 +47,7 @@ class ReconocedorSimboloTest {
 
     @Test
     void unPuntoSueltoSigueSiendoOperador() {
-        // "..." es símbolo, pero "." (acceso a miembro) es operador
+
         List<Token> tokens = lexer().analizar("... .");
         assertEquals(2, tokens.size());
         assertEquals(new Token("...", TipoToken.SIMBOLO, 1, 1, 3), tokens.get(0));
@@ -57,7 +56,7 @@ class ReconocedorSimboloTest {
 
     @Test
     void dosPuntosNoFormanPuntosSuspensivos() {
-        // ".." no llega a "...", así que salen dos operadores "."
+
         List<Token> tokens = lexer().analizar("..");
         assertEquals(2, tokens.size());
         assertEquals(new Token(".", TipoToken.OPERADOR, 1, 1, 1), tokens.get(0));
@@ -72,7 +71,7 @@ class ReconocedorSimboloTest {
         assertEquals(new Token("#", TipoToken.SIMBOLO, 1, 4, 4), tokens.get(1));
     }
 
-    // ---------- Casos borde: final del texto ----------
+
 
     @Test
     void simboloAlFinalDelTexto() {
@@ -81,11 +80,10 @@ class ReconocedorSimboloTest {
         assertEquals(new Token("]", TipoToken.SIMBOLO, 1, 1, 1), tokens.get(0));
     }
 
-    // ---------- Casos de la revisión, con identificadores ----------
 
-    // ReconocedorPalabraDePrueba solo existe para poder escribir identificadores en las pruebas.
+
     private Lexer lexerConPalabras() {
-        return new Lexer(List.of(new ReconocedorSimbolo(), new ReconocedorOperador(), new ReconocedorPalabraDePrueba()));
+        return new Lexer(List.of(new ReconocedorIdentificador(), new ReconocedorSimbolo(), new ReconocedorOperador()));
     }
 
     @Test
@@ -93,7 +91,7 @@ class ReconocedorSimboloTest {
         assertEquals(List.of(
                 new Token("f", TipoToken.IDENTIFICADOR, 1, 1, 1),
                 new Token("(", TipoToken.SIMBOLO, 1, 2, 2),
-                new Token("int", TipoToken.IDENTIFICADOR, 1, 3, 5),
+                new Token("int", TipoToken.PALABRA_RESERVADA, 1, 3, 5),
                 new Token(",", TipoToken.SIMBOLO, 1, 6, 6),
                 new Token("...", TipoToken.SIMBOLO, 1, 8, 10),
                 new Token(")", TipoToken.SIMBOLO, 1, 11, 11)
@@ -109,7 +107,7 @@ class ReconocedorSimboloTest {
         ), lexerConPalabras().analizar("a ## b"));
     }
 
-    // ---------- Reglas de la interfaz ----------
+
 
     @Test
     void puedeIniciarNoAvanzaElCursor() {

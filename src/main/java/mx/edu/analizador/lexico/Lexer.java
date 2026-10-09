@@ -3,24 +3,17 @@ package mx.edu.analizador.lexico;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Recorre el código fuente y delega cada token al primer reconocedor que aplique.
- * El ORDEN de la lista importa: por ejemplo, los comentarios deben ir antes que
- * los operadores, y los números antes que los operadores.
- */
+
 public class Lexer {
     private final List<ReconocedorToken> reconocedores;
 
-    /**
-     * Constructor por defecto que registra los reconocedores en orden de prioridad.
-     * Importante: los comentarios y cadenas deben ir antes que otros tokens, 
-     * y los números/caracteres antes que operadores.
-     */
+
     public Lexer() {
         this(List.of(
                 new ReconocedorCaracter(),
-                new ReconocedorDirectiva(),   // antes que Simbolo: # también es símbolo
-                new ReconocedorSimbolo(),     // antes que Operador: ... no son tres "."
+                new ReconocedorIdentificador(),
+                new ReconocedorDirectiva(),
+                new ReconocedorSimbolo(),
                 new ReconocedorOperador()
         ));
     }

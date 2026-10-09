@@ -12,7 +12,7 @@ class ReconocedorOperadorTest {
         return new Lexer(List.of(new ReconocedorSimbolo(), new ReconocedorOperador()));
     }
 
-    // ---------- Caso normal ----------
+
 
     @Test
     void reconoceOperadoresDeUnCaracter() {
@@ -33,7 +33,7 @@ class ReconocedorOperadorTest {
         assertEquals(new Token(";", TipoToken.SIMBOLO, 2, 3, 3), tokens.get(4));
     }
 
-    // ---------- Casos borde: la pieza más larga ----------
+
 
     @Test
     void tomaSiempreElOperadorMasLargo() {
@@ -64,21 +64,20 @@ class ReconocedorOperadorTest {
         assertEquals(new Token("==", TipoToken.OPERADOR, 1, 3, 4), tokens.get(1));
     }
 
-    // ---------- Casos borde: final del texto ----------
+
 
     @Test
     void operadorAlFinalDelTexto() {
-        // Al final no hay más caracteres: ">" no debe confundirse con ">=" ni ">>"
+
         List<Token> tokens = lexer().analizar(">");
         assertEquals(1, tokens.size());
         assertEquals(new Token(">", TipoToken.OPERADOR, 1, 1, 1), tokens.get(0));
     }
 
-    // ---------- Casos de la revisión, con identificadores ----------
 
-    // ReconocedorPalabraDePrueba solo existe para poder escribir identificadores en las pruebas.
+
     private Lexer lexerConPalabras() {
-        return new Lexer(List.of(new ReconocedorSimbolo(), new ReconocedorOperador(), new ReconocedorPalabraDePrueba()));
+        return new Lexer(List.of(new ReconocedorIdentificador(), new ReconocedorSimbolo(), new ReconocedorOperador()));
     }
 
     @Test
@@ -88,8 +87,8 @@ class ReconocedorOperadorTest {
                 new Token("->", TipoToken.OPERADOR, 1, 2, 3),
                 new Token("x", TipoToken.IDENTIFICADOR, 1, 4, 4),
                 new Token("<<=", TipoToken.OPERADOR, 1, 6, 8),
-                new Token("2", TipoToken.IDENTIFICADOR, 1, 10, 10)
-        ), lexerConPalabras().analizar("p->x <<= 2"));
+                new Token("n", TipoToken.IDENTIFICADOR, 1, 10, 10)
+        ), lexerConPalabras().analizar("p->x <<= n"));
     }
 
     @Test
@@ -111,7 +110,7 @@ class ReconocedorOperadorTest {
         ), lexerConPalabras().analizar("x&&!y"));
     }
 
-    // ---------- Reglas de la interfaz ----------
+
 
     @Test
     void puedeIniciarNoAvanzaElCursor() {

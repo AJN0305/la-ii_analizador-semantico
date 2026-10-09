@@ -5,15 +5,12 @@ public class ReconocedorOperador implements ReconocedorToken {
 
 
     private static final String[] OPERADORES = {
-            // 3 caracteres
+
             "<<=", ">>=",
-            // 2 caracteres
             "++", "--", "==", "!=", "<=", ">=", "&&", "||", "<<", ">>",
             "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "->",
-            // 1 carácter
             "+", "-", "*", "/", "%", "=", "<", ">", "!", "&", "|", "^", "~", "?", ":", "."
     };
-
 
     @Override
     public boolean puedeIniciar(Cursor cursor) {
