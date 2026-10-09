@@ -1,78 +1,60 @@
 package mx.edu.analizador.lexico;
 
-public class ReconocedorComentario implements ReconocedorToken{
+public class ReconocedorComentario implements ReconocedorToken {
 
     @Override
     public boolean puedeIniciar(Cursor cursor) {
-        // TODO Auto-generated method stub
-
-        if (
-        cursor.actual() == '/' &&  
-        cursor.siguiente(1) == '/' ||
-        cursor.actual() == '/' && 
-        cursor.siguiente(1) == '*'){
-            return true;
-
-        }else{
-            return false;
-        }
-        //throw new UnsupportedOperationException("Unimplemented method 'puedeIniciar'");
+        return !cursor.fin()
+                && cursor.actual() == '/'
+                && (cursor.siguiente(1) == '/' || cursor.siguiente(1) == '*');
     }
 
     @Override
     public Token leer(Cursor cursor) {
-        // TODO Auto-generated method stub
+        if (!puedeIniciar(cursor)) {
+            throw new IllegalArgumentException(
+                    "El cursor no está al inicio de un comentario"
+            );
+        }
 
         int lineaInicial = cursor.linea();
         int columnaInicial = cursor.columna();
-        int columnaFin = cursor.columna();
-        StringBuilder armadorDeToken = new StringBuilder();
 
+        // Comentario de línea: consume hasta antes del salto de línea
+        // o hasta el final del archivo.
+        if (cursor.siguiente(1) == '/') {
+            cursor.avanzar(); // primer /
+            cursor.avanzar(); // segundo /
 
-        if(cursor.siguiente(1) == '/'){
-            while (!cursor.fin() && cursor.actual() != '\n'){
-                armadorDeToken.append(cursor.actual());
+            while (!cursor.fin() && cursor.actual() != '\n') {
                 cursor.avanzar();
-                columnaFin++;
             }
 
-            return new Token(
-                armadorDeToken.toString(),
-                TipoToken.COMENTARIO_LINEA,
-                lineaInicial,
-                columnaInicial,
-                columnaFin
-            );
-
-        } else if(cursor.siguiente(1) == '*'){
-            while (!cursor.fin() && !(cursor.actual() == '*' && cursor.siguiente(1) == '/')){
-                armadorDeToken.append(cursor.actual());
-                cursor.avanzar();
-  
-            }
-
-            // Si sí encontramos el cierre */, se agrega y se consume.
-            if (!cursor.fin()) {
-            armadorDeToken.append(cursor.actual()); // *
-            cursor.avanzar();
-
-
-            armadorDeToken.append(cursor.actual()); // /
-            cursor.avanzar();
-
+            return null;
         }
 
-            return new Token(
-                armadorDeToken.toString(),
-                TipoToken.COMENTARIO_BLOQUE,
-                lineaInicial,
-                columnaInicial,
-                cursor.columna()
-            );
+        // Comentario de bloque: consume primero la apertura /*.
+        cursor.avanzar(); // /
+        cursor.avanzar(); // *
 
+        // Busca el cierre */ después de consumir la apertura.
+        while (!cursor.fin()
+                && !(cursor.actual() == '*' && cursor.siguiente(1) == '/')) {
+            cursor.avanzar();
         }
 
-        throw new UnsupportedOperationException("Unimplemented method 'leer'");
+        if (cursor.fin()) {
+            throw new IllegalStateException(
+                    "Comentario sin cerrar iniciado en línea "
+                            + lineaInicial
+                            + ", columna "
+                            + columnaInicial
+            );
+        }
+
+        cursor.avanzar(); // *
+        cursor.avanzar(); // /
+
+        return null;
     }
-    
 }
