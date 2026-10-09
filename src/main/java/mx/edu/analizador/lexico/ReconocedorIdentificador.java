@@ -24,12 +24,12 @@ public class ReconocedorIdentificador implements ReconocedorToken {
             "_Thread_local"
     );
 
-
+    // el identificador empieza con letra ASCII o _
     private static boolean esInicioIdentificador(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
     }
 
-
+    // y sigue con letras, dígitos o _
     private static boolean esParteIdentificador(char c) {
         return esInicioIdentificador(c) || (c >= '0' && c <= '9');
     }
@@ -41,7 +41,7 @@ public class ReconocedorIdentificador implements ReconocedorToken {
 
     @Override
     public Token leer(Cursor cursor) {
-
+        // donde comienza la palabra
         int linea = cursor.linea();
         int inicio = cursor.columna();
 

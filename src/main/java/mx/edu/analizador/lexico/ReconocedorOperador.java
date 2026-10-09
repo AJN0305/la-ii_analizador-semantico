@@ -14,7 +14,7 @@ package mx.edu.analizador.lexico;
  */
 public class ReconocedorOperador implements ReconocedorToken {
 
-
+    // Ordenados de MAYOR a MENOR longitud: así siempre se prueba primero el más largo.
     private static final String[] OPERADORES = {
             // 3 caracteres
             "<<=", ">>=",
@@ -36,7 +36,7 @@ public class ReconocedorOperador implements ReconocedorToken {
         int inicio = cursor.columna();
         String lexema = buscarOperador(cursor);
 
-        // Avanzamos tantos caracteres como mida el operador encontrado
+        // Avanzamos tantos caracteres como mida el operador encontrado.
         for (int i = 0; i < lexema.length(); i++) {
             cursor.avanzar();
         }
