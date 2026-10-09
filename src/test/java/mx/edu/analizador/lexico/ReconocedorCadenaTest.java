@@ -44,7 +44,7 @@ class ReconocedorCadenaTest {
 
     @Test
     void reconoceEscapesNumericos() {
-        String fuente = "\"\\x41\\101\\u0041\"";
+        String fuente = "\"\\x41\\101\\u0041\\U0001F600\"";
         Token token = leer(fuente);
         assertEquals(fuente, token.lexema());
     }
@@ -79,6 +79,7 @@ class ReconocedorCadenaTest {
     @Test
     void unicodeIncompletoLanzaError() {
         assertThrows(IllegalStateException.class, () -> leer("\"\\u12\""));
+        assertThrows(IllegalStateException.class, () -> leer("\"\\U0041\""));
     }
 
     @Test

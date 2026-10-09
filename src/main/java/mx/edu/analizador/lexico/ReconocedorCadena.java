@@ -1,5 +1,20 @@
 package mx.edu.analizador.lexico;
 
+/**
+ * Reconoce las cadenas de C entre comillas dobles, como "hola", y las marca como CADENA.
+ * El lexema incluye las comillas.
+ *
+ * Acepta las secuencias de escape de C: simples (\n \t \r \b \f \v \a \\ \" \' \?),
+ * octales de 1 a 3 dígitos (\101), hexadecimales (\x41) y universales (\u0041, \U0001F600).
+ *
+ * Lanza un error con línea y columna si la cadena no se cierra antes del salto de línea
+ * o del fin del archivo, o si una secuencia de escape no es válida.
+ *
+ * No soporta los prefijos L, u, U ni u8: L"hola" se lee como el identificador L y la cadena.
+ *
+ * Orden en el Lexer: debe ir ANTES que ReconocedorCaracter, para que la ' dentro de
+ * una cadena no se lea como inicio de un carácter.
+ */
 public class ReconocedorCadena implements ReconocedorToken {
     private static final char COMILLA = '"';
     private static final char ESCAPE = '\\';
@@ -66,12 +81,13 @@ public class ReconocedorCadena implements ReconocedorToken {
             while (esHexadecimal(cursor.actual())) {
                 tomar(cursor, lexema);
             }
-        } else if (c == 'u') {
+        } else if (c == 'u' || c == 'U') {
+            int digitos = c == 'u' ? 4 : 8;
             tomar(cursor, lexema);
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < digitos; i++) {
                 if (!esHexadecimal(cursor.actual())) {
-                    throw error("Escape \\u incompleto, se necesitan 4 dígitos hexadecimales",
-                            linea, columna);
+                    throw error("Escape \\" + c + " incompleto, se necesitan " + digitos
+                            + " dígitos hexadecimales", linea, columna);
                 }
                 tomar(cursor, lexema);
             }
