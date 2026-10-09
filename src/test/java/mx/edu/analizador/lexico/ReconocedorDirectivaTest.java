@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class ReconocedorDirectivaTest {
-
+    // Mismo orden que en Lexer(): identificadores, directivas, símbolos, operadores.
     private Lexer lexer() {
         return new Lexer(List.of(
                 new ReconocedorIdentificador(),
@@ -20,7 +20,6 @@ class ReconocedorDirectivaTest {
     private Token directiva(String lexema, int linea, int inicio, int fin) {
         return new Token(lexema, TipoToken.DIRECTIVA, linea, inicio, fin);
     }
-
 
 
     @Test
@@ -50,7 +49,7 @@ class ReconocedorDirectivaTest {
         ), lexer().analizar(fuente));
     }
 
-
+    // ---------- El salto de línea final no es parte del lexema ----------
 
     @Test
     void saltoDeLineaFinalNoEsParteDelLexema() {
@@ -113,7 +112,7 @@ class ReconocedorDirectivaTest {
 
     @Test
     void nombreQueNoEsDirectivaQuedaComoNumeralEIdentificador() {
-
+        // #includes  ->  #, includes      #x  ->  #, x
         assertEquals(List.of(
                 new Token("#", TipoToken.SIMBOLO, 1, 1, 1),
                 new Token("includes", TipoToken.IDENTIFICADOR, 1, 2, 9),
@@ -125,11 +124,11 @@ class ReconocedorDirectivaTest {
     @Test
     void puedeIniciarRechazaLoQueNoEsDirectiva() {
         ReconocedorDirectiva reconocedor = new ReconocedorDirectiva();
-        assertFalse(reconocedor.puedeIniciar(new Cursor("#hola")));
-        assertFalse(reconocedor.puedeIniciar(new Cursor("#includes")));
-        assertFalse(reconocedor.puedeIniciar(new Cursor("#define2")));
-        assertFalse(reconocedor.puedeIniciar(new Cursor("#")));
-        assertFalse(reconocedor.puedeIniciar(new Cursor("include")));
+        assertFalse(reconocedor.puedeIniciar(new Cursor("#hola")));      // no es directiva de C
+        assertFalse(reconocedor.puedeIniciar(new Cursor("#includes")));  // el nombre sigue con letras
+        assertFalse(reconocedor.puedeIniciar(new Cursor("#define2")));   // el nombre sigue con un dígito
+        assertFalse(reconocedor.puedeIniciar(new Cursor("#")));          // # solo
+        assertFalse(reconocedor.puedeIniciar(new Cursor("include")));    // falta el #
         assertFalse(reconocedor.puedeIniciar(new Cursor("")));
     }
 
@@ -137,7 +136,7 @@ class ReconocedorDirectivaTest {
     void puedeIniciarRechazaNumeralAMitadDeLinea() {
         Cursor cursor = new Cursor("a #if b");
         cursor.avanzar();
-        cursor.avanzar();
+        cursor.avanzar();   // el cursor queda en el #
         assertFalse(new ReconocedorDirectiva().puedeIniciar(cursor));
     }
 
@@ -167,7 +166,8 @@ class ReconocedorDirectivaTest {
 
     @Test
     void lexerPorDefectoUsaLosReconocedoresEnOrden() {
-
+        // Directiva antes que símbolo (#) y símbolo antes que operador (...),
+        // junto con los reconocedores de caracteres e identificadores que ya están en main.
         List<Token> tokens = new Lexer().analizar("#include <stdio.h>\nint f(...) <<= '\\n'");
         assertEquals(List.of(
                 directiva("#include <stdio.h>", 1, 1, 18),
