@@ -7,13 +7,20 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class LexerTest {
+
     private Lexer lexer() {
-        return new Lexer(List.of(new ReconocedorSimbolo()));
+        return new Lexer(List.of(
+                new ReconocedorComentario(),
+                new ReconocedorCaracter(),
+                new ReconocedorIdentificador(),
+                new ReconocedorSimbolo()
+        ));
     }
 
     @Test
     void reconoceSimbolosConPosicion() {
         List<Token> tokens = lexer().analizar("(){\n  ;");
+
         assertEquals(4, tokens.size());
         assertEquals(new Token("(", TipoToken.SIMBOLO, 1, 1, 1), tokens.get(0));
         assertEquals(new Token("{", TipoToken.SIMBOLO, 1, 3, 3), tokens.get(2));
@@ -22,6 +29,46 @@ class LexerTest {
 
     @Test
     void caracterDesconocidoLanzaExcepcion() {
-        assertThrows(IllegalStateException.class, () -> lexer().analizar("(@)"));
+        assertThrows(
+                IllegalStateException.class,
+                () -> lexer().analizar("(@)")
+        );
+    }
+
+    @Test
+    void lexerPorDefectoReconoceUnaDeclaracion() {
+        assertEquals(List.of(
+            new Token("char", TipoToken.PALABRA_RESERVADA, 1, 1, 4),
+            new Token("c", TipoToken.IDENTIFICADOR, 1, 6, 6),
+            new Token("[", TipoToken.SIMBOLO, 1, 7, 7),
+            new Token("]", TipoToken.SIMBOLO, 1, 8, 8),
+            new Token(";", TipoToken.SIMBOLO, 1, 9, 9)
+        ), new Lexer().analizar("char c[];"));
+    }
+
+    @Test
+    void conservaLineaYColumnaDespuesDeComentarioDeLinea() {
+        List<Token> tokens = lexer().analizar("x; // fin\ny;");
+
+        Token y = tokens.stream()
+                .filter(token -> token.lexema().equals("y"))
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals(2, y.linea());
+        assertEquals(1, y.inicio());
+    }
+
+    @Test
+    void conservaLineaYColumnaDespuesDeComentarioDeBloqueMultilinea() {
+        List<Token> tokens = lexer().analizar("/* a\n b */ x");
+
+        Token x = tokens.stream()
+                .filter(token -> token.lexema().equals("x"))
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals(2, x.linea());
+        assertEquals(7, x.inicio());
     }
 }
