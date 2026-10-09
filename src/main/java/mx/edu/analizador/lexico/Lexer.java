@@ -19,9 +19,10 @@ public class Lexer {
     public Lexer() {
         this(List.of(
                 new ReconocedorComentario(),   // antes que Operador: // y /* empiezan con /
-                new ReconocedorCadena(),
+                new ReconocedorCadena(),       // antes que Caracter: una cadena puede contener '
                 new ReconocedorCaracter(),
                 new ReconocedorIdentificador(),
+                new ReconocedorNumero(),       // antes que Simbolo y Operador: ".5" empieza con "."
                 new ReconocedorDirectiva(),   // antes que Simbolo: # también es símbolo
                 new ReconocedorSimbolo(),     // antes que Operador: ... no son tres "."
                 new ReconocedorOperador()
