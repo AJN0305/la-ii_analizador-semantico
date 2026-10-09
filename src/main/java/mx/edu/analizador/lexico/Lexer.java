@@ -5,20 +5,22 @@ import java.util.List;
 
 /**
  * Recorre el código fuente y delega cada token al primer reconocedor que aplique.
- * El orden de la lista importa.
+ * El ORDEN de la lista importa: por ejemplo, los comentarios deben ir antes que
+ * los operadores, y los números antes que los operadores.
  */
 public class Lexer {
     private final List<ReconocedorToken> reconocedores;
 
     /**
-     * Registra los reconocedores en orden de prioridad.
+     * Constructor por defecto que registra los reconocedores en orden de prioridad.
+     * Importante: los comentarios y cadenas deben ir antes que otros tokens,
+     * y los números/caracteres antes que operadores.
      */
     public Lexer() {
         this(List.of(
-                new ReconocedorComentario(),
-                new ReconocedorCaracter(),
-                new ReconocedorIdentificador(),
-                new ReconocedorSimbolo()
+            new ReconocedorComentario(),
+            new ReconocedorCaracter(),
+            new ReconocedorIdentificador()
         ));
     }
 
@@ -37,33 +39,21 @@ public class Lexer {
             }
 
             ReconocedorToken reconocedor = buscarReconocedor(cursor);
-
             if (reconocedor == null) {
-                throw new IllegalStateException(
-                        "Carácter inesperado '" + cursor.actual()
-                                + "' en línea " + cursor.linea()
-                                + ", columna " + cursor.columna()
-                );
+                throw new IllegalStateException("Carácter inesperado '" + cursor.actual()
+                        + "' en línea " + cursor.linea() + ", columna " + cursor.columna());
             }
 
             Token token = reconocedor.leer(cursor);
-
-            // Los comentarios devuelven null y no se agregan a la tabla.
-            if (token != null) {
-                tokens.add(token);
-            }
+            if (token != null) tokens.add(token);
         }
-
         return tokens;
     }
 
     private ReconocedorToken buscarReconocedor(Cursor cursor) {
-        for (ReconocedorToken reconocedor : reconocedores) {
-            if (reconocedor.puedeIniciar(cursor)) {
-                return reconocedor;
-            }
+        for (ReconocedorToken r : reconocedores) {
+            if (r.puedeIniciar(cursor)) return r;
         }
-
         return null;
     }
 }
