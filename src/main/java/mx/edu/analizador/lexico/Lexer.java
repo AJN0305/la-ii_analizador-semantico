@@ -18,6 +18,7 @@ public class Lexer {
      */
     public Lexer() {
         this(List.of(
+                new ReconocedorComentario(),   // antes que Operador: // y /* empiezan con /
                 new ReconocedorCaracter(),
                 new ReconocedorIdentificador(),
                 new ReconocedorDirectiva(),   // antes que Simbolo: # también es símbolo
