@@ -6,8 +6,8 @@ El programa lee un archivo fuente en C (`.c`), lo analiza y muestra el resultado
 
 | Sección | Contenido |
 |---------|-----------|
-| **Tabla de símbolos** (arriba) | Una fila por cada `Token` reconocido: lexema, tipo, línea, inicio y fin. |
-| **Código fuente** (abajo) | El contenido del archivo `.c` que se está leyendo. |
+| **Tabla de símbolos** (izquierda) | Una fila por cada `Token` reconocido: lexema, tipo, línea, inicio y fin. |
+| **Código fuente** (derecha) | El contenido del archivo `.c` que se está leyendo. |
 
 ## Requisitos
 
