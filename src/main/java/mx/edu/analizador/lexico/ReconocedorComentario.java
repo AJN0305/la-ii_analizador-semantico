@@ -3,8 +3,6 @@ package mx.edu.analizador.lexico;
 /**
  * Consume comentarios de línea y de bloque sin agregarlos a la lista de tokens.
  */
-
-
 public class ReconocedorComentario implements ReconocedorToken {
 
     @Override
