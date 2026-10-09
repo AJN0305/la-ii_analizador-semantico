@@ -13,12 +13,13 @@ public class Lexer {
 
     /**
      * Constructor por defecto que registra los reconocedores en orden de prioridad.
-     * Importante: los comentarios y cadenas deben ir antes que otros tokens, 
+     * Importante: los comentarios y cadenas deben ir antes que otros tokens,
      * y los números/caracteres antes que operadores.
      */
     public Lexer() {
         this(List.of(
-            new ReconocedorCaracter()
+            new ReconocedorCaracter(),
+            new ReconocedorIdentificador()
         ));
     }
 
