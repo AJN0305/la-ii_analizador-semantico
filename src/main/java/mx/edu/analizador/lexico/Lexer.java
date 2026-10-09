@@ -18,9 +18,11 @@ public class Lexer {
      */
     public Lexer() {
         this(List.of(
-            new ReconocedorCaracter(),
-            new ReconocedorIdentificador(),
-            new ReconocedorSimbolo()
+                new ReconocedorCaracter(),
+                new ReconocedorIdentificador(),
+                new ReconocedorDirectiva(),   // antes que Simbolo: # también es símbolo
+                new ReconocedorSimbolo(),     // antes que Operador: ... no son tres "."
+                new ReconocedorOperador()
         ));
     }
 
