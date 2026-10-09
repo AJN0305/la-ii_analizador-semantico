@@ -10,17 +10,19 @@ import java.util.List;
  */
 public class Lexer {
     private final List<ReconocedorToken> reconocedores;
-
-    /**
+    
+      /**
      * Constructor por defecto que registra los reconocedores en orden de prioridad.
      * Importante: los comentarios y cadenas deben ir antes que otros tokens,
      * y los números/caracteres antes que operadores.
      */
     public Lexer() {
-        this(List.of(
+        this.reconocedores = List.of(
+
             new ReconocedorCaracter(),
-            new ReconocedorIdentificador()
-        ));
+            new ReconocedorIdentificador(),
+            new ReconocedorSimbolo()
+        );
     }
 
     public Lexer(List<ReconocedorToken> reconocedores) {
