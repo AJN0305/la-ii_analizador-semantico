@@ -6,6 +6,7 @@ import mx.edu.analizador.lexico.Token;
 //9999999999999999999999999999999999
 import mx.edu.analizador.semantico.ErrorContinue;
 import mx.edu.analizador.semantico.ErrorSemantico;
+import mx.edu.analizador.semantico.ErrorReturn;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -173,6 +174,7 @@ public class VentanaPrincipal extends JFrame {
             // Error 99999999999999999999999999999999
             // Error 9 - Uso incorrecto de continue
             List<ErrorSemantico> errores = new ErrorContinue().analizar(tokens);
+            errores.addAll(new ErrorReturn().analizar(tokens));
             for (int i = 0; i < errores.size(); i++) {
                 ErrorSemantico error = errores.get(i);
                 modeloErrores.addRow(new Object[]{
